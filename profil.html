@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - Hidden Shop</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store"></i> Hidden Shop
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="produits.html">Produits</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.html">Catégories</a>
+                    </li>
+                </ul>
+                <div class="d-flex auth-buttons">
+                    <!-- Les boutons de connexion seront injectés ici via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-3">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <div class="avatar-placeholder mb-3">
+                                    <i class="fas fa-user fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="mb-0" id="userName">Chargement...</h5>
+                                <p class="text-muted" id="userEmail">Chargement...</p>
+                            </div>
+                            <div class="list-group list-group-flush">
+                                <a href="#profile" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                                    <i class="fas fa-user me-2"></i>Mon profil
+                                </a>
+                                <a href="#orders" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                                    <i class="fas fa-shopping-bag me-2"></i>Mes commandes
+                                </a>
+                                <a href="#addresses" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Mes adresses
+                                </a>
+                                <a href="#security" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                                    <i class="fas fa-lock me-2"></i>Sécurité
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-9">
+                    <div class="tab-content">
+                        <!-- Profile Tab -->
+                        <div class="tab-pane fade show active" id="profile">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body p-4">
+                                    <h4 class="card-title mb-4">Informations personnelles</h4>
+                                    <form id="profileForm">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Prénom</label>
+                                                <input type="text" class="form-control" id="firstName" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Nom</label>
+                                                <input type="text" class="form-control" id="lastName" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="email" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Téléphone</label>
+                                                <input type="tel" class="form-control" id="phone">
+                                            </div>
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Orders Tab -->
+                        <div class="tab-pane fade" id="orders">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body p-4">
+                                    <h4 class="card-title mb-4">Mes commandes</h4>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>N° Commande</th>
+                                                    <th>Date</th>
+                                                    <th>Statut</th>
+                                                    <th>Total</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="5" class="text-center">Aucune commande pour le moment</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Addresses Tab -->
+                        <div class="tab-pane fade" id="addresses">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <h4 class="card-title mb-0">Mes adresses</h4>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                            <i class="fas fa-plus me-2"></i>Ajouter une adresse
+                                        </button>
+                                    </div>
+                                    <div class="row g-4" id="addressesList">
+                                        <!-- Les adresses seront injectées ici via JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Tab -->
+                        <div class="tab-pane fade" id="security">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body p-4">
+                                    <h4 class="card-title mb-4">Sécurité</h4>
+                                    <form id="passwordForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">Mot de passe actuel</label>
+                                            <input type="password" class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Nouveau mot de passe</label>
+                                            <input type="password" class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Confirmer le nouveau mot de passe</label>
+                                            <input type="password" class="form-control" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-key me-2"></i>Changer le mot de passe
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add Address Modal -->
+    <div class="modal fade" id="addAddressModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajouter une adresse</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAddressForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nom de l'adresse</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Adresse</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Ville</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Code postal</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" form="addAddressForm" class="btn btn-primary">Ajouter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>À propos</h5>
+                    <p>Hidden Shop est votre destination shopping en ligne de confiance.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liens rapides</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="contact.html" class="text-light">Contact</a></li>
+                        <li><a href="mentions-legales.html" class="text-light">Mentions légales</a></li>
+                        <li><a href="cgv.html" class="text-light">CGV</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Suivez-nous</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-2"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-light me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-2"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/auth.js"></script>
+    <script>
+        // Vérifier l'authentification
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!auth.isAuthenticated) {
+                window.location.href = 'connexion.html';
+                return;
+            }
+
+            // Afficher les informations de l'utilisateur
+            const userName = document.getElementById('userName');
+            const userEmail = document.getElementById('userEmail');
+            if (userName && userEmail) {
+                userName.textContent = auth.user.name;
+                userEmail.textContent = auth.user.email;
+            }
+
+            // Gérer le formulaire de profil
+            const profileForm = document.getElementById('profileForm');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // Simuler la sauvegarde des modifications
+                    const notification = document.createElement('div');
+                    notification.className = 'alert alert-success position-fixed top-0 end-0 m-3 fade-in';
+                    notification.style.zIndex = '1000';
+                    notification.textContent = 'Profil mis à jour avec succès !';
+                    
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 3000);
+                });
+            }
+
+            // Gérer le formulaire de mot de passe
+            const passwordForm = document.getElementById('passwordForm');
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // Simuler le changement de mot de passe
+                    const notification = document.createElement('div');
+                    notification.className = 'alert alert-success position-fixed top-0 end-0 m-3 fade-in';
+                    notification.style.zIndex = '1000';
+                    notification.textContent = 'Mot de passe modifié avec succès !';
+                    
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 3000);
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

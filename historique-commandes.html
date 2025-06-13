@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique des Commandes - Hidden Shop</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .order-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .order-header {
+            background-color: #f8f9fa;
+            border-radius: 15px 15px 0 0;
+            padding: 15px 20px;
+        }
+
+        .order-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-delivered {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .payment-details {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .receipt-btn {
+            background-color: #9dd9eb;
+            color: #111;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .receipt-btn:hover {
+            background-color: #7bc8e0;
+            transform: translateY(-2px);
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .receipt-modal .modal-content {
+            border-radius: 15px;
+        }
+
+        .receipt-header {
+            background-color: #9dd9eb;
+            color: #111;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .receipt-body {
+            padding: 30px;
+        }
+
+        .receipt-footer {
+            border-top: 2px dashed #ddd;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .print-btn {
+            background-color: #9dd9eb;
+            color: #111;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .print-btn:hover {
+            background-color: #7bc8e0;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .receipt-modal .modal-content {
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store"></i> Hidden Shop
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="produits.html">Produits</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.html">Catégories</a>
+                    </li>
+                </ul>
+                <div class="d-flex auth-buttons">
+                    <!-- Les boutons de connexion seront injectés ici via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Historique des Commandes -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <h2 class="mb-0">Historique des Commandes</h2>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex gap-2">
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">Tous les statuts</option>
+                            <option value="pending">En attente</option>
+                            <option value="confirmed">Confirmées</option>
+                            <option value="delivered">Livrées</option>
+                        </select>
+                        <select class="form-select" id="sortFilter">
+                            <option value="date-desc">Plus récentes</option>
+                            <option value="date-asc">Plus anciennes</option>
+                            <option value="price-desc">Montant décroissant</option>
+                            <option value="price-asc">Montant croissant</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistiques -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Total des commandes</h6>
+                            <h3 class="mb-0" id="totalOrders">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Commandes livrées</h6>
+                            <h3 class="mb-0" id="deliveredOrders">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-dark">
+                        <div class="card-body">
+                            <h6 class="card-title">En attente</h6>
+                            <h3 class="mb-0" id="pendingOrders">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Montant total</h6>
+                            <h3 class="mb-0" id="totalAmount">0 XOF</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barre de recherche -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="searchOrder" placeholder="Rechercher une commande par numéro, produit ou adresse...">
+                    </div>
+                </div>
+            </div>
+
+            <div id="orders-container">
+                <!-- Les commandes seront injectées ici via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal pour le reçu -->
+    <div class="modal fade receipt-modal" id="receiptModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="receipt-header">
+                    <h4 class="mb-0">Reçu de Commande</h4>
+                </div>
+                <div class="receipt-body" id="receiptContent">
+                    <!-- Le contenu du reçu sera injecté ici -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="print-btn" onclick="window.print()">
+                        <i class="fas fa-print me-2"></i>Imprimer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>À propos</h5>
+                    <p>Hidden Shop est votre destination shopping en ligne de confiance.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liens rapides</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="contact.html" class="text-light">Contact</a></li>
+                        <li><a href="mentions-legales.html" class="text-light">Mentions légales</a></li>
+                        <li><a href="cgv.html" class="text-light">CGV</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Suivez-nous</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-2"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-light me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-2"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/auth.js"></script>
+    <script>
+        // Données de test pour les commandes
+        const orders = [
+            {
+                id: "CMD001",
+                date: "2024-03-15",
+                status: "delivered",
+                total: 75000,
+                paymentMethod: "Orange Money",
+                paymentStatus: "Payé",
+                items: [
+                    {
+                        name: "Smartphone XYZ",
+                        price: 45000,
+                        quantity: 1,
+                        image: "images/products/phone.jpg"
+                    },
+                    {
+                        name: "Coque de protection",
+                        price: 15000,
+                        quantity: 2,
+                        image: "images/products/case.jpg"
+                    }
+                ],
+                shippingAddress: "Badalabougou, Bamako",
+                trackingNumber: "TRK123456789"
+            },
+            {
+                id: "CMD002",
+                date: "2024-03-10",
+                status: "confirmed",
+                total: 35000,
+                paymentMethod: "Wave",
+                paymentStatus: "Payé",
+                items: [
+                    {
+                        name: "Écouteurs sans fil",
+                        price: 35000,
+                        quantity: 1,
+                        image: "images/products/earphones.jpg"
+                    }
+                ],
+                shippingAddress: "Hamdallaye, Bamako",
+                trackingNumber: "TRK987654321"
+            }
+        ];
+
+        // Fonction pour mettre à jour les statistiques
+        function updateStats(filteredOrders) {
+            document.getElementById('totalOrders').textContent = filteredOrders.length;
+            document.getElementById('deliveredOrders').textContent = 
+                filteredOrders.filter(order => order.status === 'delivered').length;
+            document.getElementById('pendingOrders').textContent = 
+                filteredOrders.filter(order => order.status === 'pending').length;
+            document.getElementById('totalAmount').textContent = 
+                filteredOrders.reduce((sum, order) => sum + order.total, 0).toLocaleString() + ' XOF';
+        }
+
+        // Fonction pour filtrer et trier les commandes
+        function filterAndSortOrders() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            const searchTerm = document.getElementById('searchOrder').value.toLowerCase();
+
+            let filteredOrders = orders.filter(order => {
+                const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+                const matchesSearch = searchTerm === '' || 
+                    order.id.toLowerCase().includes(searchTerm) ||
+                    order.items.some(item => item.name.toLowerCase().includes(searchTerm)) ||
+                    order.shippingAddress.toLowerCase().includes(searchTerm);
+                return matchesStatus && matchesSearch;
+            });
+
+            // Trier les commandes
+            filteredOrders.sort((a, b) => {
+                switch(sortFilter) {
+                    case 'date-desc':
+                        return new Date(b.date) - new Date(a.date);
+                    case 'date-asc':
+                        return new Date(a.date) - new Date(b.date);
+                    case 'price-desc':
+                        return b.total - a.total;
+                    case 'price-asc':
+                        return a.total - b.total;
+                    default:
+                        return 0;
+                }
+            });
+
+            displayOrders(filteredOrders);
+            updateStats(filteredOrders);
+        }
+
+        // Ajouter les écouteurs d'événements pour les filtres
+        document.getElementById('statusFilter').addEventListener('change', filterAndSortOrders);
+        document.getElementById('sortFilter').addEventListener('change', filterAndSortOrders);
+        document.getElementById('searchOrder').addEventListener('input', filterAndSortOrders);
+
+        // Fonction pour afficher les commandes
+        function displayOrders(ordersToDisplay) {
+            const container = document.getElementById('orders-container');
+            if (ordersToDisplay.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                        <h4>Aucune commande trouvée</h4>
+                        <p class="text-muted">Essayez de modifier vos critères de recherche</p>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = ordersToDisplay.map(order => `
+                <div class="card order-card">
+                    <div class="order-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">Commande #${order.id}</h5>
+                            <small class="text-muted">${new Date(order.date).toLocaleDateString('fr-FR')}</small>
+                        </div>
+                        <span class="order-status status-${order.status}">
+                            ${getStatusText(order.status)}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                ${order.items.map(item => `
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="${item.image}" alt="${item.name}" class="product-image me-3">
+                                        <div>
+                                            <h6 class="mb-1">${item.name}</h6>
+                                            <p class="mb-0 text-muted">
+                                                ${item.quantity} x ${item.price.toLocaleString()} XOF
+                                            </p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="col-md-4">
+                                <div class="payment-details">
+                                    <h6>Détails de paiement</h6>
+                                    <p class="mb-1">Méthode: ${order.paymentMethod}</p>
+                                    <p class="mb-1">Statut: ${order.paymentStatus}</p>
+                                    <p class="mb-1">Total: ${order.total.toLocaleString()} XOF</p>
+                                    <button class="receipt-btn w-100 mt-3" onclick="showReceipt('${order.id}')">
+                                        <i class="fas fa-receipt me-2"></i>Voir le reçu
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Fonction pour obtenir le texte du statut
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'En attente',
+                'confirmed': 'Confirmée',
+                'delivered': 'Livrée'
+            };
+            return statusMap[status] || status;
+        }
+
+        // Fonction pour afficher le reçu
+        function showReceipt(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            const receiptContent = document.getElementById('receiptContent');
+            receiptContent.innerHTML = `
+                <div class="text-center mb-4">
+                    <h3>Hidden Shop</h3>
+                    <p class="mb-0">Reçu de Commande</p>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <p class="mb-1"><strong>Commande #${order.id}</strong></p>
+                        <p class="mb-1">Date: ${new Date(order.date).toLocaleDateString('fr-FR')}</p>
+                        <p class="mb-1">Statut: ${getStatusText(order.status)}</p>
+                    </div>
+                    <div class="col-6 text-end">
+                        <p class="mb-1"><strong>Adresse de livraison:</strong></p>
+                        <p class="mb-1">${order.shippingAddress}</p>
+                        <p class="mb-1">N° de suivi: ${order.trackingNumber}</p>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th class="text-center">Quantité</th>
+                            <th class="text-end">Prix</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${order.items.map(item => `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td class="text-center">${item.quantity}</td>
+                                <td class="text-end">${item.price.toLocaleString()} XOF</td>
+                                <td class="text-end">${(item.price * item.quantity).toLocaleString()} XOF</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Total</strong></td>
+                            <td class="text-end"><strong>${order.total.toLocaleString()} XOF</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="receipt-footer">
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="mb-1"><strong>Méthode de paiement:</strong></p>
+                            <p class="mb-0">${order.paymentMethod}</p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p class="mb-1"><strong>Statut du paiement:</strong></p>
+                            <p class="mb-0">${order.paymentStatus}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const receiptModal = new bootstrap.Modal(document.getElementById('receiptModal'));
+            receiptModal.show();
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            filterAndSortOrders();
+        });
+    </script>
+</body>
+</html> 
